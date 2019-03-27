@@ -1,4 +1,4 @@
-# Starter Kit for Building Applications in React and Redux on Pluralsight
+# An Applications in React and Redux
 
 ## Get Started
 
