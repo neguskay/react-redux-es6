@@ -61,7 +61,7 @@ module.exports = {
         //use: run files with the l=specified loaders
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        use: ["babel-loader", "eslint-loader"] //
+        use: ["eslint-loader", "babel-loader"] //
       },
       {
         //Style rule
