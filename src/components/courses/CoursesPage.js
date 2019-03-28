@@ -2,11 +2,37 @@ import React from "react"
 import { connect } from "react-redux"
 import PropTypes from "prop-types"
 import { bindActionCreators } from "redux"
+
 import * as courseActions from "../../redux/actions/courseActions"
+import * as authorActions from "../../redux/actions/authorActions"
+import CourseList from "./CourseList"
 
 //Courses Page component as a class component
 class CoursesPage extends React.Component {
-  //Using hooks style
+  //Lifecycle method to run as soon as component mounts
+  ////dispatch a call which will eventually reduce to an API call via Fetch request
+  componentDidMount() {
+    //Destructure the needed resources from props
+
+    let { courses, authors, actions } = this.props
+
+    //Check if we have already received the list of authors,
+    //Make the call if we haven't
+    if (authors.length === 0) {
+      actions.loadAuthors().catch(error => {
+        alert("loading Authors failed" + error)
+      })
+    }
+    //Check if we have already received the list of courses,
+    //Make the call if we haven't
+    if (courses.length === 0) {
+      actions.loadCourses().catch(error => {
+        alert("loading Courses failed" + error)
+      })
+    }
+  }
+
+  /*   //Using hooks style
   //no need to use "constructor" or call super
   state = {
     course: {
@@ -42,26 +68,19 @@ class CoursesPage extends React.Component {
     //Calling map dispatch, but without bindActionCreators
     this.props.actions.createCourse(this.state.course)
   }
-
+ */
   render() {
     //Render function
     //On-click on save wont' allow keyboard "enterkey press"
     // dp=oing an on-cubmit on form will!
     return (
-      <form onSubmit={this.handleSubmit}>
+      <>
         <h2>Courses</h2>
-        <h3>Add Course</h3>
-        <input
-          type="text"
-          onChange={this.handleChange}
-          value={this.state.course.title}
-        />
-
-        <input type="submit" value="Save" />
-        {this.props.courses.map(course => (
+        <CourseList courses={this.props.courses} />
+        {/* {this.props.courses.map(course => (
           <div key={course.title}>{course.title}</div>
-        ))}
-      </form>
+        ))} */}
+      </>
     )
   }
 }
@@ -69,6 +88,7 @@ class CoursesPage extends React.Component {
 //Define some proptypes
 CoursesPage.propTypes = {
   courses: PropTypes.array.isRequired,
+  authors: PropTypes.array.isRequired,
   //createCourse: PropTypes.func.isRequired
   actions: PropTypes.object.isRequired
 }
@@ -77,7 +97,26 @@ CoursesPage.propTypes = {
 //Only request the data that your component needs and no more
 function mapStateToProps(state) {
   return {
-    courses: state.courses
+    //Check if state has actually received the authors list first,
+    //  Else return an empty array
+
+    //Map through the courses, for each,
+    //find the author from the author list and,
+    // ammend the course data with the authoer name
+    //Set courses
+    courses:
+      state.authors.length === 0
+        ? []
+        : state.courses.map(course => {
+            return {
+              ...course,
+              authorName: state.authors.find(
+                auth => auth.id === course.authorId
+              ).name
+            }
+          }),
+    //Set authors
+    authors: state.authors
   }
 }
 
@@ -94,7 +133,10 @@ function mapDispatchToProps(dispatch) {
     //createCourse: course => dispatch(courseActions.createCourse(course))
 
     //Using Bind Action Creators
-    actions: bindActionCreators(courseActions, dispatch)
+    actions: {
+      loadCourses: bindActionCreators(courseActions.loadCourses, dispatch),
+      loadAuthors: bindActionCreators(authorActions.loadAuthors, dispatch)
+    }
   }
 }
 

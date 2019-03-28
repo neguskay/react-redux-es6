@@ -1,7 +1,7 @@
 import * as types from "../actions/actionTypes"
-
+import initialState from "./initialState"
 //Couse reducer for the courses Page component
-export default function courseReducer(state = [], action) {
+export default function courseReducer(state = initialState.courses, action) {
   //Reduces and selects appropriate changes based on the type of action which arrives
   switch (action.type) {
     //If the type is to create course,
@@ -10,6 +10,10 @@ export default function courseReducer(state = [], action) {
       //then change the course of the new state by setting it to the course object that arrived within the action
       //This keeps our state immutable
       return [...state, { ...action.course }]
+
+    //if type is to load courses, load them
+    case types.LOAD_COURSES_SUCCESS:
+      return action.courses
 
     //If none of the types received with the in-coming action(s) can be reduced in this reducer,
     //return the old state: Don't change anything because eventually, that action will find its reducer

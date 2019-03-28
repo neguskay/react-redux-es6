@@ -43,6 +43,12 @@ module.exports = {
 
   //Some plugings
   plugins: [
+    //Define ENV variables
+    //Wherever "process.env.API_URL" exists will be replaced with the URL in the stringify method
+    new webpack.DefinePlugin({
+      "process.env.API_URL": JSON.stringify("http://localhost:3001")
+    }),
+
     //Accepts an object
     //template and favicon set
     new HtmlWebpackPlugin({
@@ -61,7 +67,7 @@ module.exports = {
         //use: run files with the l=specified loaders
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        use: ["eslint-loader", "babel-loader"] //
+        use: ["babel-loader", "eslint-loader"] //
       },
       {
         //Style rule
@@ -69,6 +75,17 @@ module.exports = {
         test: /(\.css)$/,
         use: ["style-loader", "css-loader"]
       }
+      // ],
+      // rules: [
+      //   {
+      //     test: /\.(js|jsx)$/,
+      //     exclude: /node_modules/,
+      //     use: ["babel-loader", "eslint-loader"]
+      //   },
+      //   {
+      //     test: /(\.css)$/,
+      //     use: ["style-loader", "css-loader"]
+      //   }
     ]
   }
 }
