@@ -1,4 +1,5 @@
 import React from "react"
+import { Redirect } from "react-router-dom"
 import { connect } from "react-redux"
 import PropTypes from "prop-types"
 import { bindActionCreators } from "redux"
@@ -9,6 +10,11 @@ import CourseList from "./CourseList"
 
 //Courses Page component as a class component
 class CoursesPage extends React.Component {
+  //Declare the redirect state
+  state = {
+    redirectToAddCoursePage: false
+  }
+
   //Lifecycle method to run as soon as component mounts
   ////dispatch a call which will eventually reduce to an API call via Fetch request
   componentDidMount() {
@@ -75,7 +81,15 @@ class CoursesPage extends React.Component {
     // dp=oing an on-cubmit on form will!
     return (
       <>
+        {this.state.redirectToAddCoursePage && <Redirect to="/course" />}
         <h2>Courses</h2>
+        <button
+          style={{ marginBottom: 20 }}
+          className="btn btn-primary add-course"
+          onClick={() => this.setState({ redirectToAddCoursePage: true })}
+        >
+          Add A Course
+        </button>
         <CourseList courses={this.props.courses} />
         {/* {this.props.courses.map(course => (
           <div key={course.title}>{course.title}</div>
