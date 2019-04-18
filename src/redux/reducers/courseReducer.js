@@ -27,6 +27,11 @@ export default function courseReducer(state = initialState.courses, action) {
         course.id === action.course.id ? action.course : course
       )
 
+    //Filter through the list of course
+    //Return all courses where the ID isn't the one we just deleted as array
+    case types.DELETE_COURSE_OPTIMISTIC:
+      return state.filter(course => course.id !== action.course.id)
+
     default:
       return state
   }

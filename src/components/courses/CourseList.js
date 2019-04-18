@@ -6,7 +6,7 @@ import { Link } from "react-router-dom"
 //Instantiated as a function component
 //Receives some props and renders accordingly
 //Destructures 'courses' from the props
-const CourseList = ({ courses }) => (
+const CourseList = ({ courses, onDeleteClick }) => (
   <table className="table">
     <thead>
       <tr>
@@ -14,6 +14,7 @@ const CourseList = ({ courses }) => (
         <th>Title</th>
         <th>Author</th>
         <th>Category</th>
+        <th />
       </tr>
     </thead>
     <tbody>
@@ -34,6 +35,14 @@ const CourseList = ({ courses }) => (
             <td>{course.authorName}</td>
             {/* <td>{course.authorId}</td> */}
             <td>{course.category}</td>
+            <td>
+              <button
+                className="btn btn-outline-danger"
+                onClick={() => onDeleteClick(course)}
+              >
+                Delete
+              </button>
+            </td>
           </tr>
         )
       })}
@@ -43,7 +52,8 @@ const CourseList = ({ courses }) => (
 
 //Declare and define some proptypes
 CourseList.propTypes = {
-  courses: PropTypes.array.isRequired
+  courses: PropTypes.array.isRequired,
+  onDeleteClick: PropTypes.func.isRequired
 }
 
 //Export teh default

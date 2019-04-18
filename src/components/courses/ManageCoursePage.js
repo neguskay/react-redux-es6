@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react"
 import { connect } from "react-redux"
+import { toast } from "react-toastify"
 import PropTypes from "prop-types"
 import { loadCourses, saveCourse } from "../../redux/actions/courseActions"
 import { loadAuthors } from "../../redux/actions/authorActions"
 import CourseForm from "./CourseForm"
 import { newCourse } from "../../../tools/mockData"
+import Spinner from "../common/Spinner"
 
 /*****
 //Manages all course components
@@ -124,19 +126,13 @@ function ManageCoursePage({
   //Basically initialise the state variable to a copy of the state of course parsed in on props
   //Do similar for errors
   const [course, setCourse] = useState({ ...props.course })
-  const [errors, setErros] = useState({})
+  const [errors, setErrors] = useState({})
+  //Track saving status of API to diplay or hide the "save button"
+  const [saving, setSaving] = useState(false)
 
   //Use Effect hook
   //Run when the compoenent mounts
   useEffect(() => {
-    //Check if we have already received the list of authors,
-    //Make the call if we haven't
-    if (authors.length === 0) {
-      loadAuthors().catch(error => {
-        alert("loading Authors failed" + error)
-      })
-    }
-
     //Check if we have already received the list of courses,
     //Make the call if we haven't
     if (courses.length === 0) {
@@ -147,6 +143,14 @@ function ManageCoursePage({
       //Set the state as the current course
       setCourse({
         ...props.course
+      })
+    }
+
+    //Check if we have already received the list of authors,
+    //Make the call if we haven't
+    if (authors.length === 0) {
+      loadAuthors().catch(error => {
+        alert("loading Authors failed" + error)
       })
     }
     //Adds the couse to ensure it only runs when any of the props change and not all the time
@@ -165,29 +169,68 @@ function ManageCoursePage({
     }))
   }
 
+  function formIsValid() {
+    //Destrcture the attributes and check them from the user-filled form
+    const { title, authorId, category } = course
+
+    //Create an errors const
+    const errors = {}
+
+    //Check for the errors
+    if (!title) errors.title = "Title is required."
+    if (!authorId) errors.author = "Author is required"
+    if (!category) errors.category = "Category is required"
+
+    //Set the errors
+    setErrors(errors)
+
+    //Return bool, true if the errors object is empty
+    // Form is valid if the errors object still has no properties
+    return Object.keys(errors).length === 0
+  }
+
   //Handle save within form
   function handleSave(event) {
     //Stop the page from posting back
     event.preventDefault()
 
+    //Check for form validation and return if not
+    if (!formIsValid()) return
+
+    //Set the 'setSaving' state to true
+    setSaving(true)
+
     //Save the course available in state
     saveCourse(course)
-      //Then change the hisory back to the courses list page
-      //Can be chained because save course returns a promise
       .then(() => {
+        //Then change the hisory back to the courses list page
+        //Can be chained because save course returns a promise
+        toast.success("Course Saved.")
         history.push("/courses")
+      })
+      .catch(error => {
+        //Reset the button so user can try again
+        setSaving(false)
+
+        //Set the errors
+        setErrors({ onSave: error.message })
       })
   }
 
   //return the function component
   //Pass in the approrpiate props
-  return (
+  //Check the count of authors and courses and display a spinner if either is 0,
+  //  this means we might still be loading from API
+  return authors.length === 0 || courses.length === 0 ? (
+    <Spinner />
+  ) : (
     <CourseForm
       course={course}
       errors={errors}
       authors={authors}
       onChange={handleChange}
       onSave={handleSave}
+      saving={saving}
     />
   )
 }

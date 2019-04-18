@@ -28,8 +28,10 @@ server.use(middlewares)
 server.use(jsonServer.bodyParser)
 
 // Simulate delay on all requests
+// Can be changed to any number in ms to simulate a delay time
 server.use(function(req, res, next) {
-  setTimeout(next, 0)
+  //setTimeout(next, 0)
+  setTimeout(next, 2000)
 })
 
 // Declaring custom routes below.
