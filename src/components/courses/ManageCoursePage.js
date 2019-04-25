@@ -108,7 +108,7 @@ import Spinner from "../common/Spinner"
 // Uses the 'use-effect' hook
 //This compoenent uses a local react state and not redux(not necessary)
 //Assign any properties that haven't been destructered on the lhs, as props
-function ManageCoursePage({
+export function ManageCoursePage({
   courses,
   authors,
   loadAuthors,

@@ -8,7 +8,7 @@ import AboutPage from "./about/AboutPage"
 import Header from "./common/Header"
 import PageNotFound from "./PageNotFound"
 import CoursesPage from "./courses/CoursesPage"
-import ManageCoursePage from "./courses/ManageCoursePage"
+import ManageCoursePage from "./courses/ManageCoursePage" // eslint-disable-line import/no-named-as-default
 
 //App component as a function comp
 function App() {

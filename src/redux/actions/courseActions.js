@@ -62,6 +62,8 @@ export function loadCourses() {
 export function saveCourse(course) {
   //Optional getstate object with all of redux states
   //Handy for debugging
+
+  // eslint-disable-next-line no-unused-vars
   return function(dispatch, getState) {
     //Before API call, disptach the "call in progress" action to track it
     dispatch(beginApiCall())
